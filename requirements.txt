@@ -1,0 +1,67 @@
+# ==========================================================
+# Requirements for Bolt Detection & Measurement System
+# Python Version: 3.9+
+# ==========================================================
+
+# ------------------ Core Libraries ------------------
+
+numpy==2.0.2
+pandas==2.2.3
+
+# ---------------- Computer Vision -------------------
+
+opencv-python==4.13.0
+Pillow
+
+# ---------------- Deep Learning ---------------------
+
+torch==2.5.1+cu121
+ultralytics==8.4.14
+
+# --------------- PDF Report Generation --------------
+
+reportlab==4.5.1
+
+# ==========================================================
+# Python Standard Library Modules
+# (Included with Python - No installation required)
+# ==========================================================
+
+# os
+# re
+# sys
+# time
+# math
+# io
+# queue
+# threading
+# subprocess
+# importlib
+# datetime
+# typing
+# collections
+# tkinter
+# ctypes
+# traceback
+
+# ==========================================================
+# Installation
+# ==========================================================
+#
+# Install all required packages:
+#
+# pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121
+#
+# ==========================================================
+# System Requirements
+# ==========================================================
+#
+# • Python 3.9 or newer
+# • Windows 10/11 (recommended)
+# • NVIDIA GPU (optional, for GPU acceleration)
+# • NVIDIA Driver compatible with CUDA 12.1
+#
+# Tkinter is included with the standard Python installation.
+# On Linux, install python3-tk if it is not already installed.
+#
+# ==========================================================

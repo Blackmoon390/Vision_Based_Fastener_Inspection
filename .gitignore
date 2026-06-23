@@ -1,0 +1,4 @@
+test_images/
+__pycache__/
+measure_nut_bolt.py
+saved_frames/
