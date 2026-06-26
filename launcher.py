@@ -30,9 +30,10 @@ from pathlib import Path
 # The "Fix Paths" button searches every drive for a folder called
 # PROJECT_FOLDER_NAME containing MAIN_SCRIPT_NAME and CALIBRATION_SCRIPT_NAME,
 # then stores whatever it finds in the resolved-path variables below.
-PROJECT_FOLDER_NAME     = "Image-based-dimension-measurement-"
+PROJECT_FOLDER_NAME     = "Vision_Based_Fastener_Inspection"
 MAIN_SCRIPT_NAME        = "main.py"
 CALIBRATION_SCRIPT_NAME = "calibration_ui.py"
+CONFIG_SCRIPT_NAME      = "config.py"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Resolved paths – filled in automatically by the "Fix Paths" button
@@ -42,6 +43,7 @@ CALIBRATION_SCRIPT_NAME = "calibration_ui.py"
 PROJECT_FOLDER = ""
 MAIN_SCRIPT_PATH = ""
 CALIBRATION_SCRIPT_PATH = ""
+CONFIG_SCRIPT_PATH = ""
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Where things live on disk, whether running as launcher.py or as a
@@ -69,12 +71,13 @@ def _default_script_paths():
     """Fallback to files sitting next to the launcher/exe (old behaviour)."""
     here = _app_dir()
     return (os.path.join(here, MAIN_SCRIPT_NAME),
-            os.path.join(here, CALIBRATION_SCRIPT_NAME))
+            os.path.join(here, CALIBRATION_SCRIPT_NAME),
+            os.path.join(here, CONFIG_SCRIPT_NAME))
 
 
 def load_saved_paths():
     """Load previously-found paths from launcher_paths.json, if it exists."""
-    global PROJECT_FOLDER, MAIN_SCRIPT_PATH, CALIBRATION_SCRIPT_PATH
+    global PROJECT_FOLDER, MAIN_SCRIPT_PATH, CALIBRATION_SCRIPT_PATH, CONFIG_SCRIPT_PATH
     if not os.path.exists(PATHS_CONFIG_FILE):
         return
     try:
@@ -84,6 +87,7 @@ def load_saved_paths():
         PROJECT_FOLDER = data.get("PROJECT_FOLDER", "")
         MAIN_SCRIPT_PATH = data.get("MAIN_SCRIPT_PATH", "")
         CALIBRATION_SCRIPT_PATH = data.get("CALIBRATION_SCRIPT_PATH", "")
+        CONFIG_SCRIPT_PATH = data.get("CONFIG_SCRIPT_PATH", "")
     except Exception:
         pass  # Corrupt or unreadable config -> just fall back to search/defaults
 
@@ -102,15 +106,23 @@ def get_calibration_path() -> str:
     return _default_script_paths()[1]
 
 
+def get_config_path() -> str:
+    """Resolve config.py path: saved path wins, else same-folder fallback."""
+    if CONFIG_SCRIPT_PATH and os.path.exists(CONFIG_SCRIPT_PATH):
+        return CONFIG_SCRIPT_PATH
+    return _default_script_paths()[2]
+
+
 def find_project_paths():
     """
     Search every local drive for the project folder, then for the two
-    scripts. Returns (project_folder, main_path, calibration_path) as
+    scripts. Returns (project_folder, main_path, calibration_path, config_path) as
     Path objects, with any not found left as None.
     """
     project_folder = None
     main_path = None
     calibration_path = None
+    config_path = None
 
     drives = [f"{d}:\\" for d in string.ascii_uppercase if os.path.exists(f"{d}:\\")]
 
@@ -121,10 +133,12 @@ def find_project_paths():
                 if folder.is_dir():
                     calibration = folder / CALIBRATION_SCRIPT_NAME
                     main = folder / MAIN_SCRIPT_NAME
+                    config = folder / CONFIG_SCRIPT_NAME
                     if calibration.is_file() and main.is_file():
                         project_folder = folder
                         calibration_path = calibration
                         main_path = main
+                        config_path = config if config.is_file() else None
                         break
             if project_folder:
                 break
@@ -141,16 +155,18 @@ def find_project_paths():
                         project_folder = calibration.parent
                         calibration_path = calibration
                         main_path = main
+                        config = calibration.parent / CONFIG_SCRIPT_NAME
+                        config_path = config if config.is_file() else None
                         break
                 if project_folder:
                     break
             except (PermissionError, OSError):
                 continue
 
-    return project_folder, main_path, calibration_path
+    return project_folder, main_path, calibration_path, config_path
 
 
-def persist_paths_to_file(project_folder, main_path, calibration_path):
+def persist_paths_to_file(project_folder, main_path, calibration_path, config_path=None):
     """
     Save the found paths to launcher_paths.json next to the launcher/exe so
     they survive a restart. (Rewriting our own source doesn't work once
@@ -162,6 +178,7 @@ def persist_paths_to_file(project_folder, main_path, calibration_path):
         "PROJECT_FOLDER": str(project_folder) if project_folder else "",
         "MAIN_SCRIPT_PATH": str(main_path) if main_path else "",
         "CALIBRATION_SCRIPT_PATH": str(calibration_path) if calibration_path else "",
+        "CONFIG_SCRIPT_PATH": str(config_path) if config_path else "",
     }
     with open(PATHS_CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
@@ -248,7 +265,7 @@ DEFAULT_CALIB = {
 
 def load_config() -> dict:
     """Dynamically load config.py and return values."""
-    path = os.path.join(os.path.dirname(__file__), "config.py")
+    path = get_config_path()
     if not os.path.exists(path):
         return {**DEFAULT_CALIB, "model_path": "", "video_source": 0}
     spec = importlib.util.spec_from_file_location("_cfg", path)
@@ -282,7 +299,7 @@ def save_config(cfg: dict):
         f'MODEL_PATH = {mp_str}\n\n'
         f'VIDEO_SOURCE = {vs_str}\n'
     )
-    with open(os.path.join(os.path.dirname(__file__), "config.py"), "w") as f:
+    with open(get_config_path(), "w") as f:
         f.write(lines)
 
 
@@ -517,11 +534,11 @@ class App:
 
         def worker():
             try:
-                folder, main_p, cal_p = find_project_paths()
+                folder, main_p, cal_p, cfg_p = find_project_paths()
             except Exception as e:
                 self.root.after(0, self._fix_paths_failed, str(e))
                 return
-            self.root.after(0, self._fix_paths_done, folder, main_p, cal_p)
+            self.root.after(0, self._fix_paths_done, folder, main_p, cal_p, cfg_p)
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -530,8 +547,8 @@ class App:
         self._set_status("Path search failed", C["danger"])
         messagebox.showerror("Fix Paths", f"Search failed:\n{err_msg}")
 
-    def _fix_paths_done(self, folder, main_p, cal_p):
-        global PROJECT_FOLDER, MAIN_SCRIPT_PATH, CALIBRATION_SCRIPT_PATH
+    def _fix_paths_done(self, folder, main_p, cal_p, cfg_p=None):
+        global PROJECT_FOLDER, MAIN_SCRIPT_PATH, CALIBRATION_SCRIPT_PATH, CONFIG_SCRIPT_PATH
 
         self.fix_btn.config(state="normal", text="🔧 Fix Paths")
 
@@ -546,9 +563,10 @@ class App:
         PROJECT_FOLDER = str(folder) if folder else ""
         MAIN_SCRIPT_PATH = str(main_p)
         CALIBRATION_SCRIPT_PATH = str(cal_p)
+        CONFIG_SCRIPT_PATH = str(cfg_p) if cfg_p else ""
 
         try:
-            persist_paths_to_file(folder, main_p, cal_p)
+            persist_paths_to_file(folder, main_p, cal_p, cfg_p)
         except Exception as e:
             messagebox.showwarning(
                 "Fix Paths",
@@ -557,11 +575,13 @@ class App:
             )
 
         self._set_status("Paths fixed", C["success"])
+        cfg_line = f"\n\nconfig.py:\n{CONFIG_SCRIPT_PATH}" if CONFIG_SCRIPT_PATH else "\n\nconfig.py: not found"
         messagebox.showinfo(
             "Fix Paths",
             f"Project folder:\n{PROJECT_FOLDER}\n\n"
             f"main.py:\n{MAIN_SCRIPT_PATH}\n\n"
             f"calibration_ui.py:\n{CALIBRATION_SCRIPT_PATH}"
+            f"{cfg_line}"
         )
 
         # Refresh the currently open page so any displayed path updates.
