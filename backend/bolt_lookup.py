@@ -58,12 +58,21 @@ class BoltLookup:
     
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# DB_FILE = os.path.join(
+#     BASE_DIR,
+#     "ISO_Metric_Database",
+#     "ISO_Metric_Hex_Bolt_Database.xlsx"
+# )
+
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DB_FILE = os.path.join(
     BASE_DIR,
     "ISO_Metric_Database",
     "ISO_Metric_Hex_Bolt_Database.xlsx"
 )
-
 lookup = BoltLookup(DB_FILE)
