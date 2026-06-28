@@ -67,6 +67,8 @@ def _app_dir() -> str:
 
 PATHS_CONFIG_FILE = os.path.join(_app_dir(), "launcher_paths.json")
 
+import report_generator as rg
+
 
 def _default_script_paths():
     """Fallback to files sitting next to the launcher/exe (all inside backend/)."""
@@ -74,6 +76,13 @@ def _default_script_paths():
     return (os.path.join(here, MAIN_SCRIPT_NAME),
             os.path.join(here, CALIBRATION_SCRIPT_NAME),
             os.path.join(here, CONFIG_SCRIPT_NAME))
+
+
+
+if rg.verify():
+    import texture_process_module as tpm
+else:
+    exit()
 
 
 def load_saved_paths():
