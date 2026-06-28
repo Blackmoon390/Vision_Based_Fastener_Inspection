@@ -76,6 +76,8 @@ set_window_scale(1.0)
 
 if rg.verify():
     import texture_process_module as tpm
+else:
+    exit()
     
 
 
