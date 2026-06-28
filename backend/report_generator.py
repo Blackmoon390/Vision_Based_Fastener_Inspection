@@ -242,6 +242,57 @@ def _iso_table(iso_data: dict, styles: dict):
     ]))
     return t
 
+EXPECTED = {
+    "name":     "Vishnu S",
+    "email":    "senseicoder09@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/vishnu-s-42757a310/",
+    "github":   "https://github.com/Blackmoon390"
+}
+
+# ============================================================
+# Author  : Vishnu S
+# Email   : senseicoder09@gmail.com
+# LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+# GitHub  : https://github.com/Blackmoon390
+# ============================================================
+
+# Field name mapping (as they appear in the txt file)
+FIELD_MAP = {
+    "name":     "Name",
+    "email":    "Email",
+    "linkedin": "LinkedIn",
+    "github":   "GitHub"
+}
+# data='''# ============================================================
+# # Author  : Vishnu S
+# # Email   : senseicoder09@gmail.com
+# # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+# # GitHub  : https://github.com/Blackmoon390
+# # ============================================================'''
+
+
+def verify(filepath: str = "ced.txt") -> bool:
+    parsed = {}
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        for line in f:
+            if ":" in line and not line.strip().startswith("="):
+                key, _, value = line.partition(":")
+                key = key.strip().lower()
+                value = value.strip()
+
+                for field, label in FIELD_MAP.items():
+                    if key == label.lower():
+                        parsed[field] = value
+                        break
+
+    return all(
+        parsed.get(field, "").lower() == expected.lower()
+        for field, expected in EXPECTED.items()
+    )
+
+
+
 
 def create_bolt_report(
     measurement_data: dict,
@@ -300,6 +351,13 @@ def create_bolt_report(
     elements.append(image_table)
     elements.append(Spacer(1, 0.25 * inch))
 
+    data='''# ============================================================
+# Author  : Vishnu S
+# Email   : senseicoder09@gmail.com
+# LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+# GitHub  : https://github.com/Blackmoon390
+# ============================================================'''
+
     # ── Physical measurements ───────────────────────────────────────────────────
     elements.append(Paragraph("Physical Measurements", styles["SectionHeader"]))
     elements.append(_divider())
@@ -344,6 +402,12 @@ def create_bolt_report(
         )
     )
     elements.append(Spacer(1, 0.25 * inch))
+    datac2='''# ============================================================
+# Author  : Vishnu S
+# Email   : senseicoder09@gmail.com
+# LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+# GitHub  : https://github.com/Blackmoon390
+# ============================================================'''
 
     # ── Footer rule ─────────────────────────────────────────────────────────────
     elements.append(_divider(PRIMARY, thickness=1))

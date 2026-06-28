@@ -11,6 +11,12 @@ Layout (overlaid on live feed):
   TOP-RIGHT     : BOLT MASK
   RIGHT         : SYSTEM INFORMATION + FPS METER
   BOTTOM-RIGHT  : INSPECTION STATUS (PASS/FAIL)
+          # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
 render_dashboard(measurement_data, live_frame=None) -> np.ndarray (1080,1920,3)
 init_window(name)
@@ -475,7 +481,12 @@ def draw_status_panel(canvas: np.ndarray, status: str) -> int:
     ty = BY1 + 20 + (BOX_H - 20 + th) // 2
     cv2.putText(canvas, status_up, (tx, ty), _F, 1.3, color, 3, cv2.LINE_AA)
     return BY1
-
+        # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
 # ═════════════════════════════════════════════════════════════
 #  LEFT-BOTTOM-RIGHT: GENERATE REPORT BUTTON  (below-right of tolerance box)

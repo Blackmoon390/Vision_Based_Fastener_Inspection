@@ -1,7 +1,6 @@
 import cv2
 from ultralytics import YOLO
 import torch
-import texture_process_module as tpm
 import os
 import threading
 import queue
@@ -14,6 +13,7 @@ from industrial_dashboard import render_dashboard, init_window, show_frame, set_
 from bolt_lookup import lookup
 import measurement_overlay
 from report_generator import create_bolt_report
+import report_generator as rg
 
 
 # =========================
@@ -72,6 +72,11 @@ converter = Calibration(**CALIBRATION)
 
 
 set_window_scale(1.0)
+
+
+if rg.verify():
+    import texture_process_module as tpm
+    
 
 
 
@@ -324,6 +329,12 @@ def processing_thread():
                                 # print("rotated_crop shape:",None if rotated_crop is None else rotated_crop.shape)
                                 # print("mm_frame shape:",None if mm_frame is None else mm_frame.shape)
                                 # print("ISO_data:", ISO_data)
+                                # data='''# ============================================================
+                                #       # Author  : Vishnu S
+                                #      # Email   : senseicoder09@gmail.com
+                                #        # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+                                #         # GitHub  : https://github.com/Blackmoon390
+                                #    # ============================================================'''
                                 
                                 rp_id = f"BOLT-NO{num}_F_{frame_id}"
                                 

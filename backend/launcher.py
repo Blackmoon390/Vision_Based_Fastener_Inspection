@@ -404,6 +404,12 @@ class Splash(tk.Toplevel):
         self.msg = tk.Label(inner, text="Starting…", font=SMALL_FONT,
                              fg=C["fg3"], bg=C["splash"])
         self.msg.pack(pady=(6, 0))
+        # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
     def _run(self):
         steps = [
@@ -511,6 +517,12 @@ class App:
                  fg=C["fg2"], bg=C["header"]).pack(side="left")
         tk.Label(bar, text=f"Python {sys.version.split()[0]}",
                  font=SMALL_FONT, fg=C["fg3"], bg=C["header"]).pack(side="right", padx=12)
+                # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
     def _clear_content(self):
         for w in self.content.winfo_children():
@@ -533,6 +545,12 @@ class App:
         update the global path variables, persist them into this file, and
         refresh the UI so other pages pick up the new paths immediately.
         """
+                # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
         global PROJECT_FOLDER, MAIN_SCRIPT_PATH, CALIBRATION_SCRIPT_PATH
 
         self.fix_btn.config(state="disabled", text="🔧 Searching…")
@@ -656,6 +674,12 @@ class App:
                 "cmd":     lambda: self._launch_main(),
             },
         ]
+                # data='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
         for c in cards:
             self._nav_card(card_row, c)
@@ -910,6 +934,12 @@ class App:
 
         # ── Section: Video Source ──────────────────────────────────────
         self._cfg_section(pad, "🎬  Input Source", C["accent"])
+                # datac4='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
         radio_row = tk.Frame(pad, bg=C["card"])
         radio_row.pack(anchor="w", pady=(0, 8))
@@ -1134,6 +1164,12 @@ class App:
             self.root.after(120, self._animate_spinner)
         except tk.TclError:
             pass
+                # datac5='''# ============================================================
+        #  # Author  : Vishnu S 
+        # # Email   : senseicoder09@gmail.com
+        #  # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
+        #  # GitHub  : https://github.com/Blackmoon390
+        #  # ============================================================'''
 
     def _set_step(self, idx, state):
         """state: active | done | pending"""
