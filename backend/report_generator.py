@@ -242,55 +242,27 @@ def _iso_table(iso_data: dict, styles: dict):
     ]))
     return t
 
-EXPECTED = {
-    "name":     "Vishnu S",
-    "email":    "senseicoder09@gmail.com",
-    "linkedin": "https://www.linkedin.com/in/vishnu-s-42757a310/",
-    "github":   "https://github.com/Blackmoon390"
-}
 
-# ============================================================
-# Author  : Vishnu S
-# Email   : senseicoder09@gmail.com
-# LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
-# GitHub  : https://github.com/Blackmoon390
-# ============================================================
-
-# Field name mapping (as they appear in the txt file)
-FIELD_MAP = {
-    "name":     "Name",
-    "email":    "Email",
-    "linkedin": "LinkedIn",
-    "github":   "GitHub"
-}
-# data='''# ============================================================
-# # Author  : Vishnu S
-# # Email   : senseicoder09@gmail.com
-# # LinkedIn: https://www.linkedin.com/in/vishnu-s-42757a310/
-# # GitHub  : https://github.com/Blackmoon390
-# # ============================================================'''
-
+EXPECTED = (
+    "79+0MTeO81eNfqVL1AX5URJB2l1Ny/fO2lHgEzEXuSCF8iD8Dce8EXQ+UkK2YjAIH27nuaw8"
+    "RXN0LiLK3alQgsWUuqXQvFH+thdENdjX8BVldnBVAuWKU0kHOMQ8yEwQw9d5+ddNyP1Wzcg/"
+    "ZRkCNCnWG/pHGsDZ9Cln3gEqRkCtxv4bm2hWu9fUXyitHraYykkl4dzCBE7SvlmvA+Kg+LH"
+    "qaDtM+kGGNEFxBItU+dzsslQKOMvFjxNtGJ+mmMdrz1S9FcAVEkkn81Wq9+NmAMRfcwYk8F"
+    "nhbzGkXrUfN8n4Ez5ZBs69D4HdjOunTUdCkYqPw3HlHky1FyNqocv0aOmOa/u1rBiGiw6B1"
+    "crBd1XQiHw="
+)
 
 def verify(filepath: str = "ced.txt") -> bool:
-    parsed = {}
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = f.read().strip()
 
-    with open(filepath, "r", encoding="utf-8") as f:
-        for line in f:
-            if ":" in line and not line.strip().startswith("="):
-                key, _, value = line.partition(":")
-                key = key.strip().lower()
-                value = value.strip()
+        return data == EXPECTED
 
-                for field, label in FIELD_MAP.items():
-                    if key == label.lower():
-                        parsed[field] = value
-                        break
-
-    return all(
-        parsed.get(field, "").lower() == expected.lower()
-        for field, expected in EXPECTED.items()
-    )
-
+    except FileNotFoundError:
+        return False
+    except Exception:
+        return False
 
 
 
@@ -386,7 +358,7 @@ def create_bolt_report(
             "and correspond to the identified bolt size. These values serve as the ground-truth "
             "baseline for tolerance verification and quality control.",
             styles["DescBody"],
-        )
+        ) #79+0MTeO81eNfqVL1AX5URJB2l1Ny/fO2lHgEzEXuSCF8iD8Dce8EXQ+UkK2YjAIH27nuaw8RXN0LiLK3alQgsWUuqXQvFH+thdENdjX8BVldnBVAuWKU0kHOMQ8yEwQw9d5+ddNyP1Wzcg/ZRkCNCnWG/pHGsDZ9Cln3gEqRkCtxv4bm2hWu9fUXyitHraYykkl4dzCBE7SvlmvA+Kg+LHqaDtM+kGGNEFxBItU+dzsslQKOMvFjxNtGJ+mmMdrz1S9FcAVEkkn81Wq9+NmAMRfcwYk8FnhbzGkXrUfN8n4Ez5ZBs69D4HdjOunTUdCkYqPw3HlHky1FyNqocv0aOmOa/u1rBiGiw6B1crBd1XQiHw=
     )
     elements.append(Spacer(1, 0.1 * inch))
     elements.append(_iso_table(iso_data, styles))
